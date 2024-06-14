@@ -1,0 +1,146 @@
+2:1 mux
+
+module twoToOne(B,neg,outB);
+
+input B;
+input neg; //sel=neg
+
+wire SN,output1,outpu2;
+
+output outB;
+
+not(SN,neg);
+
+and(output1,B,SN);
+and(output2,neg,0);
+
+or(outB,output1,output2);
+
+endmodule
+
+
+module oneBitAdder(A,B,S,cin,cout,out);
+input A,B,cin;
+output S,cout;
+wire w1,w2,w3;
+
+assign w1= A ^ B;
+
+and(w2,w1,cin);
+and(w3,A,B);
+
+assign out= w1 ^ cin;
+assign cout= w2 | w3;
+
+endmodule
+
+module fullAdder(A,B,cout,sum);
+   input[31:0]A,B;
+   output[31:0]sum;
+
+   output cout;
+
+   wire [31:0]w;
+
+oneBitAdder x1(A[0], B[0], 1, sum[0], w1);
+oneBitAdder x2(A[1], B[1], w1, sum[1], w2);
+oneBitAdder x3(A[2], B[2], w2, sum[2], w3);
+oneBitAdder x4(A[3], B[3], w3, sum[3], w4);
+oneBitAdder x5(A[4], B[4], w4, sum[4], w5);
+oneBitAdder x6(A[5], B[5], w5, sum[5], w6);
+oneBitAdder x7(A[6], B[6], w6, sum[6], w7);
+oneBitAdder x8(A[7], B[7], w7, sum[7], w8);
+oneBitAdder x9(A[8], B[8], w8, sum[8], w9);
+oneBitAdder x10(A[9], B[9], w9, sum[9], w10);
+oneBitAdder x11(A[10], B[10], w10, sum[10], w11);
+oneBitAdder x12(A[11], B[11], w11, sum[11], w12);
+oneBitAdder x13(A[12], B[12], w12, sum[12], w13);
+oneBitAdder x14(A[13], B[13], w13, sum[13], w14);
+oneBitAdder x15(A[14], B[14], w14, sum[14], w15);
+oneBitAdder x16(A[15], B[15], w15, sum[15], w16);
+oneBitAdder x17(A[16], B[16], w16, sum[16], w17);
+oneBitAdder x18(A[17], B[17], w17, sum[17], w18);
+oneBitAdder x19(A[18], B[18], w18, sum[18], w19);
+oneBitAdder x20(A[19], B[19], w19, sum[19], w20);
+oneBitAdder x21(A[20], B[21], w20, sum[20], w21);
+oneBitAdder x22(A[21], B[21], w21, sum[21], w22);
+oneBitAdder x23(A[22], B[22], w22, sum[22], w23);
+oneBitAdder x24(A[23], B[23], w23, sum[23], w24);
+oneBitAdder x25(A[24], B[24], w24, sum[24], w25);
+oneBitAdder x26(A[25], B[25], w25, sum[25], w26);
+oneBitAdder x27(A[26], B[26], w26, sum[26], w27);
+oneBitAdder x28(A[27], B[27], w27, sum[27], w28);
+oneBitAdder x29(A[28], B[28], w28, sum[28], w29);
+oneBitAdder x30(A[29], B[29], w29, sum[29], w30);
+oneBitAdder x31(A[30], B[30], w30, sum[30], w31);
+oneBitAdder x32(A[31], B[31], w31, sum[31], cout);
+
+endmodule
+
+
+module threeToOne(A,negA,output,sel);
+input A,negA;
+input [1:0]sel;
+wire SN0,SN1,w1,w2,w3,w4;
+output out;
+
+not(SN1,sel[1]);
+not(SN0,sel[0]);
+
+and(w1,A,SN1,SN0);
+and(w2,1'b1,SN1,sel[0]);
+and(w3,negA,sel[1],sel[0]);
+
+or(w4,w1,w2,w3);
+assign out = w5;
+
+endmodule
+
+
+module negate(A,out);
+reg[31:0] A;
+reg[31:0] out;
+
+assign out = ~A +1;
+
+// use not gate
+// add one to use full adder 
+
+endmodule
+
+module ALU(A,B,out,Z,N);
+input [31:0] A,
+input [31:0] B;
+output reg[31:0]out;
+
+output reg Z,N;
+reg add,inc,neg,sub;
+
+assign reg= B+A;
+assign inc= B+1;
+assign neg= ~A;
+assign sub= B-A;
+
+
+
+always@(out)
+begin
+    Z = 0
+    if(out == 0)
+    begin
+        Z = 1;
+    end
+    
+     N = 0;
+    if(out[31] == 1)
+    begin
+        N = 1
+    end
+end
+
+endmodule  
+
+
+
+
+

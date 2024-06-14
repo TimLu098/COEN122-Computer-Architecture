@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.2 (64-bit)
+# SW Build 3064766 on Wed Nov 18 09:12:45 MST 2020
+# IP Build 3064653 on Wed Nov 18 14:17:31 MST 2020
+# Start of session at: Thu Jan 27 13:48:13 2022
+# Process ID: 5520
+# Current directory: C:/Users/ylu5/project_2/project_2.runs/synth_1
+# Command line: vivado.exe -log ALU.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source ALU.tcl
+# Log file: C:/Users/ylu5/project_2/project_2.runs/synth_1/ALU.vds
+# Journal file: C:/Users/ylu5/project_2/project_2.runs/synth_1\vivado.jou
+#-----------------------------------------------------------
+source ALU.tcl -notrace

@@ -1,0 +1,515 @@
+module alu(A,B,add,inc,neg,sub,out,Z,N);
+input [31:0] A;
+input [31:0] B;
+output [31:0]out;
+
+output reg Z,N;
+input add,inc,neg,sub;
+
+wire [31:0]negA;
+wire [1:0]sel;
+wire [31:0]outA;
+wire [31:0]outB;
+wire [31:0]sum;
+wire cout;
+wire not_sub;
+
+negate negate_A(A,out);
+
+threeToOne mux_A(A,negA,sel,outA);
+not(not_sub, sub);
+and(sel[0], inc, not_sub);
+nor(sel[1], add, inc);
+
+twoToOne mux_B(B,neg,outB);
+
+fullAdder adder(A,B,cout,sum);
+
+    
+
+always@(out)
+begin
+    Z=0;
+    if(out== 0);
+    begin
+        Z = 1;
+    end
+    
+    N=0;
+    if(out[31]== 1);
+    begin
+        N = 1;
+    end
+end
+
+endmodule  
+
+
+--------------------------------
+module alu_testbench();
+    reg[31:0]A;
+    reg[31:0]B;
+    reg add,inc,neg,sub;
+    wire [31:0]out;
+    wire Z,N;
+    
+    ALU t1(A,B,add,inc,neg,sub,out,Z,N);
+    
+    initial
+    begin
+    A= 32'b00000000000000000000000000000001;
+    B= 32'b00000000000000000000000000000001;
+   
+   //add
+   add=1;
+   neg=0;
+   sub=0;
+   inc=0;
+   #100
+   
+   //increment
+   add=0;
+   neg=0;
+   sub=0;
+   inc=1;
+   #100
+   
+   //negate
+   add=0;
+   neg=1;
+   sub=0;
+   inc=0;
+   #100
+   
+   //subtract
+   add=0;
+   neg=0;
+   sub=1;
+   inc=0;
+   #100
+   
+   
+   //passA
+   add=1;
+   neg=1;
+   sub=1;
+   inc=1;
+   #100
+   
+   $finish;
+   end
+endmodule
+-----------------------------------
+
+module negate(A,out);
+input [31:0]A;
+
+output[31:0] out;
+
+not(out[0],A[0]);
+not(out[1],A[1]);
+not(out[2],A[2]);
+not(out[3],A[3]);
+not(out[4],A[4]);
+not(out[5],A[5]);
+not(out[6],A[6]);
+not(out[7],A[7]);
+not(out[8],A[8]);
+not(out[9],A[9]);
+not(out[10],A[10]);
+not(out[11],A[11]);
+not(out[12],A[12]);
+not(out[13],A[13]);
+not(out[14],A[14]);
+not(out[15],A[15]);
+not(out[16],A[16]);
+not(out[17],A[17]);
+not(out[18],A[18]);
+not(out[19],A[19]);
+not(out[20],A[20]);
+not(out[21],A[21]);
+not(out[22],A[22]);
+not(out[23],A[23]);
+not(out[24],A[24]);
+not(out[25],A[25]);
+not(out[26],A[26]);
+not(out[27],A[27]);
+not(out[28],A[28]);
+not(out[29],A[29]);
+not(out[30],A[30]);
+not(out[31],A[31]);
+
+fullAdder add_neg(out,1,cout,sum);
+//negA,1,cout,out
+
+endmodule
+-------------------------------------
+
+module fullAdder(A,B,cout,sum);
+    input[31:0]A,B;
+    output[31:0]sum;
+    
+    
+    output cout;
+
+   wire [31:0]w;
+
+oneBitAdder x1(A[0], B[0], 1, sum[0], w[1]);
+oneBitAdder x2(A[1], B[1], w[1], sum[1], w[2]);
+oneBitAdder x3(A[2], B[2], w[2], sum[2], w[3]);
+oneBitAdder x4(A[3], B[3], w[3], sum[3], w[4]);
+oneBitAdder x5(A[4], B[4], w[4], sum[4], w[5]);
+oneBitAdder x6(A[5], B[5], w[5], sum[5], w[6]);
+oneBitAdder x7(A[6], B[6], w[6], sum[6], w[7]);
+oneBitAdder x8(A[7], B[7], w[7], sum[7], w[8]);
+oneBitAdder x9(A[8], B[8], w[8], sum[8], w[9]);
+oneBitAdder x10(A[9], B[9], w[9], sum[9], w[10]);
+oneBitAdder x11(A[10], B[10], w[10], sum[10], w[11]);
+oneBitAdder x12(A[11], B[11], w[11], sum[11], w[12]);
+oneBitAdder x13(A[12], B[12], w[12], sum[12], w[13]);
+oneBitAdder x14(A[13], B[13], w[13], sum[13], w[14]);
+oneBitAdder x15(A[14], B[14], w[14], sum[14], w[15]);
+oneBitAdder x16(A[15], B[15], w[15], sum[15], w[16]);
+oneBitAdder x17(A[16], B[16], w[16], sum[16], w[17]);
+oneBitAdder x18(A[17], B[17], w[17], sum[17], w[18]);
+oneBitAdder x19(A[18], B[18], w[18], sum[18], w[19]);
+oneBitAdder x20(A[19], B[19], w[19], sum[19], w[20]);
+oneBitAdder x21(A[20], B[21], w[20], sum[20], w[21]);
+oneBitAdder x22(A[21], B[21], w[21], sum[21], w[22]);
+oneBitAdder x23(A[22], B[22], w[22], sum[22], w[23]);
+oneBitAdder x24(A[23], B[23], w[23], sum[23], w[24]);
+oneBitAdder x25(A[24], B[24], w[24], sum[24], w[25]);
+oneBitAdder x26(A[25], B[25], w[25], sum[25], w[26]);
+oneBitAdder x27(A[26], B[26], w[26], sum[26], w[27]);
+oneBitAdder x28(A[27], B[27], w[27], sum[27], w[28]);
+oneBitAdder x29(A[28], B[28], w[28], sum[28], w[29]);
+oneBitAdder x30(A[29], B[29], w[29], sum[29], w[30]);
+oneBitAdder x31(A[30], B[30], w[30], sum[30], w[31]);
+oneBitAdder x32(A[31], B[31], w[31], sum[31], cout);
+
+endmodule
+----------------------------------------------------
+
+module oneBitAdder(A,B,cin,cout,out);
+input A,B,cin;
+output cout,out;
+wire w1,w2,w3;
+
+assign w1= A ^ B;
+
+and(w2,w1,cin);
+and(w3,A,B);
+
+assign out= w1 ^ cin;
+assign cout= w2 | w3;
+
+endmodule
+
+
+
+-----------------------------------------------------
+module threeToOne(A,negA,sel,outA);
+input [31:0]A;
+input [31:0]negA;
+input [1:0]sel;
+
+wire SN0,SN1;
+wire [31:0]w;
+wire [31:0]w1;
+wire [31:0]w2;
+wire [31:0]sum1;
+wire [31:0]sum2;
+wire [31:0]sum3;
+wire [31:0]sum4;
+wire [31:0]sum5;
+
+
+
+output [31:0]outA;
+
+negate three_neg(A,out);
+
+not(SN1,sel[1]);
+not(SN0,sel[0]);
+
+and(w[0],A[0],SN1,SN0);
+and(w[1],A[1],SN1,SN0);
+and(w[2],A[2],SN1,SN0);
+and(w[3],A[3],SN1,SN0);
+and(w[4],A[4],SN1,SN0);
+and(w[5],A[5],SN1,SN0);
+and(w[6],A[6],SN1,SN0);
+and(w[7],A[7],SN1,SN0);
+and(w[8],A[8],SN1,SN0);
+and(w[9],A[9],SN1,SN0);
+and(w[10],A[10],SN1,SN0);
+and(w[11],A[11],SN1,SN0);
+and(w[12],A[12],SN1,SN0);
+and(w[13],A[13],SN1,SN0);
+and(w[14],A[14],SN1,SN0);
+and(w[15],A[15],SN1,SN0);
+and(w[16],A[16],SN1,SN0);
+and(w[17],A[17],SN1,SN0);
+and(w[18],A[18],SN1,SN0);
+and(w[19],A[19],SN1,SN0);
+and(w[20],A[20],SN1,SN0);
+and(w[21],A[21],SN1,SN0);
+and(w[22],A[22],SN1,SN0);
+and(w[23],A[23],SN1,SN0);
+and(w[24],A[24],SN1,SN0);
+and(w[25],A[25],SN1,SN0);
+and(w[26],A[26],SN1,SN0);
+and(w[27],A[27],SN1,SN0);
+and(w[28],A[28],SN1,SN0);
+and(w[29],A[29],SN1,SN0);
+and(w[30],A[30],SN1,SN0);
+and(w[31],A[31],SN1,SN0);
+
+fullAdder add1(w,1,cout,sum1);
+
+
+
+and(w1[0],1,SN1,sel[0]);
+and(w1[1],1,SN1,sel[0]);
+and(w1[2],1,SN1,sel[0]);
+and(w1[3],1,SN1,sel[0]);
+and(w1[4],1,SN1,sel[0]);
+and(w1[5],1,SN1,sel[0]);
+and(w1[6],1,SN1,sel[0]);
+and(w1[7],1,SN1,sel[0]);
+and(w1[8],1,SN1,sel[0]);
+and(w1[9],1,SN1,sel[0]);
+and(w1[10],1,SN1,sel[0]);
+and(w1[11],1,SN1,sel[0]);
+and(w1[12],1,SN1,sel[0]);
+and(w1[13],1,SN1,sel[0]);
+and(w1[14],1,SN1,sel[0]);
+and(w1[15],1,SN1,sel[0]);
+and(w1[16],1,SN1,sel[0]);
+and(w1[17],1,SN1,sel[0]);
+and(w1[18],1,SN1,sel[0]);
+and(w1[19],1,SN1,sel[0]);
+and(w1[20],1,SN1,sel[0]);
+and(w1[21],1,SN1,sel[0]);
+and(w1[22],1,SN1,sel[0]);
+and(w1[23],1,SN1,sel[0]);
+and(w1[24],1,SN1,sel[0]);
+and(w1[25],1,SN1,sel[0]);
+and(w1[26],1,SN1,sel[0]);
+and(w1[27],1,SN1,sel[0]);
+and(w1[28],1,SN1,sel[0]);
+and(w1[29],1,SN1,sel[0]);
+and(w1[30],1,SN1,sel[0]);
+and(w1[31],1,SN1,sel[0]);
+
+fullAdder add2(w1,1,cout,sum2);
+
+
+
+and(w2[0],negA[0],sel[1],sel[0]);
+and(w2[1],negA[1],sel[1],sel[0]);
+and(w2[2],negA[2],sel[1],sel[0]);
+and(w2[3],negA[3],sel[1],sel[0]);
+and(w2[4],negA[4],sel[1],sel[0]);
+and(w2[5],negA[5],sel[1],sel[0]);
+and(w2[6],negA[6],sel[1],sel[0]);
+and(w2[7],negA[7],sel[1],sel[0]);
+and(w2[8],negA[8],sel[1],sel[0]);
+and(w2[9],negA[9],sel[1],sel[0]);
+and(w2[10],negA[10],sel[1],sel[0]);
+and(w2[11],negA[11],sel[1],sel[0]);
+and(w2[12],negA[12],sel[1],sel[0]);
+and(w2[13],negA[13],sel[1],sel[0]);
+and(w2[14],negA[14],sel[1],sel[0]);
+and(w2[15],negA[15],sel[1],sel[0]);
+and(w2[16],negA[16],sel[1],sel[0]);
+and(w2[17],negA[17],sel[1],sel[0]);
+and(w2[18],negA[18],sel[1],sel[0]);
+and(w2[19],negA[19],sel[1],sel[0]);
+and(w2[20],negA[20],sel[1],sel[0]);
+and(w2[21],negA[21],sel[1],sel[0]);
+and(w2[22],negA[22],sel[1],sel[0]);
+and(w2[23],negA[23],sel[1],sel[0]);
+and(w2[24],negA[24],sel[1],sel[0]);
+and(w2[25],negA[25],sel[1],sel[0]);
+and(w2[26],negA[26],sel[1],sel[0]);
+and(w2[27],negA[27],sel[1],sel[0]);
+and(w2[28],negA[28],sel[1],sel[0]);
+and(w2[29],negA[29],sel[1],sel[0]);
+and(w2[30],negA[30],sel[1],sel[0]);
+and(w2[31],negA[31],sel[1],sel[0]);
+
+fullAdder add3(w2,1,cout,sum3);
+
+
+or(sum4[0],sum1[0],sum2[0],sum3[0]);
+or(sum4[1],sum1[1],sum2[1],sum3[1]);
+or(sum4[2],sum1[2],sum2[2],sum3[2]);
+or(sum4[3],sum1[3],sum2[3],sum3[3]);
+or(sum4[4],sum1[4],sum2[4],sum3[4]);
+or(sum4[5],sum1[5],sum2[5],sum3[5]);
+or(sum4[6],sum1[6],sum2[6],sum3[6]);
+or(sum4[7],sum1[7],sum2[7],sum3[7]);
+or(sum4[8],sum1[8],sum2[8],sum3[8]);
+or(sum4[9],sum1[9],sum2[9],sum3[9]);
+or(sum4[10],sum1[10],sum2[10],sum3[10]);
+or(sum4[11],sum1[11],sum2[11],sum3[11]);
+or(sum4[12],sum1[12],sum2[12],sum3[12]);
+or(sum4[13],sum1[13],sum2[13],sum3[13]);
+or(sum4[14],sum1[14],sum2[14],sum3[14]);
+or(sum4[15],sum1[15],sum2[15],sum3[15]);
+or(sum4[16],sum1[16],sum2[16],sum3[16]);
+or(sum4[17],sum1[17],sum2[17],sum3[17]);
+or(sum4[18],sum1[18],sum2[18],sum3[18]);
+or(sum4[19],sum1[19],sum2[19],sum3[19]);
+or(sum4[20],sum1[20],sum2[20],sum3[20]);
+or(sum4[21],sum1[21],sum2[21],sum3[21]);
+or(sum4[22],sum1[22],sum2[22],sum3[22]);
+or(sum4[23],sum1[23],sum2[23],sum3[23]);
+or(sum4[24],sum1[24],sum2[24],sum3[24]);
+or(sum4[25],sum1[25],sum2[25],sum3[25]);
+or(sum4[26],sum1[26],sum2[26],sum3[26]);
+or(sum4[27],sum1[27],sum2[27],sum3[27]);
+or(sum4[28],sum1[28],sum2[28],sum3[28]);
+or(sum4[29],sum1[29],sum2[29],sum3[29]);
+or(sum4[30],sum1[30],sum2[30],sum3[30]);
+or(sum4[31],sum1[31],sum2[31],sum3[31]);
+
+fullAdder add4(sum4,1,cout,sum5);
+
+
+assign outA = sum5;
+
+endmodule
+-----------------------------------------
+
+module twoToOne(B,neg,outB);
+
+input [31:0]B;
+input neg; //sel=neg
+
+wire SN;
+wire [31:0]w1;
+wire [31:0]w2;
+wire [31:0]SUM1;
+wire [31:0]SUM2;
+wire [31:0]SUM3;
+wire [31:0]SUM4;
+
+output [31:0]outB;
+
+not(SN,neg);
+
+
+and(w1[0],B[0],SN);
+and(w1[1],B[1],SN);
+and(w1[2],B[2],SN);
+and(w1[3],B[3],SN);
+and(w1[4],B[4],SN);
+and(w1[5],B[5],SN);
+and(w1[6],B[6],SN);
+and(w1[7],B[7],SN);
+and(w1[8],B[8],SN);
+and(w1[9],B[9],SN);
+and(w1[10],B[10],SN);
+and(w1[11],B[11],SN);
+and(w1[12],B[12],SN);
+and(w1[13],B[13],SN);
+and(w1[14],B[14],SN);
+and(w1[15],B[15],SN);
+and(w1[16],B[16],SN);
+and(w1[17],B[17],SN);
+and(w1[18],B[18],SN);
+and(w1[19],B[19],SN);
+and(w1[20],B[20],SN);
+and(w1[21],B[21],SN);
+and(w1[22],B[22],SN);
+and(w1[23],B[23],SN);
+and(w1[24],B[24],SN);
+and(w1[25],B[25],SN);
+and(w1[26],B[26],SN);
+and(w1[27],B[27],SN);
+and(w1[28],B[28],SN);
+and(w1[29],B[29],SN);
+and(w1[30],B[30],SN);
+and(w1[31],B[31],SN);
+
+fullAdder add4(w1,1,cout,SUM1);
+
+and(w2[0],neg,0);
+and(w2[1],neg,0);
+and(w2[2],neg,0);
+and(w2[3],neg,0);
+and(w2[4],neg,0);
+and(w2[5],neg,0);
+and(w2[6],neg,0);
+and(w2[7],neg,0);
+and(w2[8],neg,0);
+and(w2[9],neg,0);
+and(w2[10],neg,0);
+and(w2[11],neg,0);
+and(w2[12],neg,0);
+and(w2[13],neg,0);
+and(w2[14],neg,0);
+and(w2[15],neg,0);
+and(w2[16],neg,0);
+and(w2[17],neg,0);
+and(w2[18],neg,0);
+and(w2[19],neg,0);
+and(w2[20],neg,0);
+and(w2[21],neg,0);
+and(w2[22],neg,0);
+and(w2[23],neg,0);
+and(w2[24],neg,0);
+and(w2[25],neg,0);
+and(w2[26],neg,0);
+and(w2[27],neg,0);
+and(w2[28],neg,0);
+and(w2[29],neg,0);
+and(w2[30],neg,0);
+and(w2[31],neg,0);
+
+fullAdder add5(w2,1,cout,SUM2);
+
+
+or(outB[0],w1[0],w2[0]);
+or(outB[1],w1[1],w2[1]);
+or(outB[2],w1[2],w2[2]);
+or(outB[3],w1[3],w2[3]);
+or(outB[4],w1[4],w2[4]);
+or(outB[5],w1[5],w2[5]);
+or(outB[6],w1[6],w2[6]);
+or(outB[7],w1[7],w2[7]);
+or(outB[8],w1[8],w2[8]);
+or(outB[9],w1[9],w2[9]);
+or(outB[10],w1[10],w2[10]);
+or(outB[11],w1[11],w2[11]);
+or(outB[12],w1[12],w2[12]);
+or(outB[13],w1[13],w2[13]);
+or(outB[14],w1[14],w2[14]);
+or(outB[15],w1[15],w2[15]);
+or(outB[16],w1[16],w2[16]);
+or(outB[17],w1[17],w2[17]);
+or(outB[18],w1[18],w2[18]);
+or(outB[19],w1[19],w2[19]);
+or(outB[20],w1[20],w2[20]);
+or(outB[21],w1[21],w2[21]);
+or(outB[22],w1[22],w2[22]);
+or(outB[23],w1[23],w2[23]);
+or(outB[24],w1[24],w2[24]);
+or(outB[24],w1[24],w2[24]);
+or(outB[25],w1[25],w2[25]);
+or(outB[26],w1[26],w2[26]);
+or(outB[27],w1[27],w2[27]);
+or(outB[28],w1[28],w2[28]);
+or(outB[29],w1[29],w2[29]);
+or(outB[30],w1[30],w2[30]);
+or(outB[31],w1[31],w2[31]);
+
+fullAdder add6(outB,1,cout,SUM4);
+
+
+
+
+endmodule
+-----------------------------------------------
