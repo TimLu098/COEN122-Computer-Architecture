@@ -1,0 +1,217 @@
+
+
+module testbench();
+
+//initialize clock
+reg clock;
+
+
+//initialize instruction memory variables and test_
+
+reg [7:0] address8;
+
+wire [31:0] ins;
+
+instruction_mem testi(clock,address8,ins);
+
+
+reg write;
+reg [5:0] rd;
+reg [5:0] rs;
+reg [5:0] rt;
+reg  [31:0] writein;
+
+wire [31:0] rsout;
+wire [31:0] rtout;
+
+register testr(clock, write,rd,rs,rt,writein,rsout,rtout);
+
+
+reg dwrite;
+reg read;
+reg [31:0] addin;
+reg [31:0] dwritein;
+
+wire [31:0] dataout;
+
+data testd(clock,dwrite,read,addin,dwritein,dataout);
+
+
+//initialize clock thread
+initial
+begin
+    clock = 0;
+    forever #50 clock = ~clock;
+end
+
+
+
+initial 
+begin
+    //module data
+        //write 7 into blocks[2]
+        dwrite = 1;
+        read = 0;
+        addin = 2;
+        dwritein = 7;
+        
+        #100
+        //read 7 from blocks[2] into dataout
+        dwrite = 0;
+        read = 1;
+        
+        
+        #100
+    //module instruct_mem
+        //read inst mem
+        //hardcode instruction
+        //assign instruc[100] = 11;
+        
+        address8 = 100;
+        
+        #100
+    
+        //read inst mem
+        //hardcode instruction
+        //assign instruc[101] = 12;
+        
+        address8 = 101;
+        
+        #100
+        
+    
+    //module register
+        //write registers
+        //regis[10] = 10
+        
+        write = 1;
+        writein = 10;
+        rt = 10;
+        
+        #100
+        //regis[11] = 11;
+        
+        writein = 11;
+        rt = 11;
+        
+        #100
+        
+        //read registers
+        //read regis[10,11]
+        
+        write = 0;
+        
+        rd = 10;
+        rs = 11;
+        
+        //sout == 10
+        //tout == 11
+    
+
+
+end
+
+
+
+endmodule
+
+
+---------------------------------------------------------
+
+module instruction_mem(clock,address8,ins);
+
+
+input clock;
+input [7:0]address8;
+output [31:0] ins;
+reg [31:0] ins;
+
+//init static memory
+wire [31:0] instruc [255:0];
+
+//hardcode instructions
+assign instruc[100] = 11;
+assign instruc[101] = 12;
+
+
+always@(posedge clock)
+begin
+   //read instructions[i] into output ins
+   ins = instruc[address8];
+
+end
+
+endmodule
+
+module data(clock,read,write,addressin,datain,dataout);
+
+input clock;
+input write;
+input read;
+
+reg [31:0] mem [65535:0];
+
+input [31:0] addressin;
+input [31:0] datain;
+
+output reg [31:0] dataout;
+
+always@(posedge clock)
+begin
+    //read data from blocks[i] into dataout
+    if (read == 1)
+    begin
+    
+        dataout = mem[addressin[15:0]];
+        
+    end
+    
+    //write data from writein into blocks[i]
+    if (write == 1)
+    begin
+    
+        mem[addressin[15:0]] = datain;
+    
+    end
+    
+
+end
+endmodule
+
+
+
+module register(clock,write,rd,rs,rt,writein,rsout,rtout);
+
+input clock;
+input write;
+
+input [5:0] rd;
+input [5:0] rs;
+input [5:0] rt;
+input [31:0] writein;
+//init static memory
+reg [31:0] regis [63:0];
+
+output reg [31:0] rsout;
+output reg [31:0] rtout;
+
+always@(posedge clock)
+begin
+   
+    if (write == 1)
+        
+        regis[rt] = writein;
+    
+    else if (write == 0)
+    begin
+    
+    
+    rsout = regis[rd];
+    rtout = regis[rs];
+   
+    
+    end
+
+
+end
+endmodule

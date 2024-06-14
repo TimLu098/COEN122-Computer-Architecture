@@ -1,0 +1,217 @@
+module data(clock,write,read,addin,writein,dataout);
+//initialize IO
+input clock;
+input write;
+input read;
+//initialize static memory
+reg [31:0] blocks [65535:0];
+
+input [31:0] addin;
+input [31:0] writein;
+
+output reg [31:0] dataout;
+
+always@(posedge clock)
+begin
+    //read data from blocks[i] into dataout
+    if (read == 1)
+    begin
+    
+        dataout = blocks[addin[15:0]];
+        
+    end
+    
+    //write data from writein into blocks[i]
+    if (write == 1)
+    begin
+    
+        blocks[addin[15:0]] = writein;
+    
+    end
+    
+
+end
+
+
+endmodule
+
+-----------------------------------------------
+
+
+module instruct(clock,adr8,ins);
+//init IO
+input clock;
+input [7:0]adr8;
+output reg [31:0] ins;
+//init static memory
+wire [31:0] instruc [255:0];
+
+//hardcode instructions
+assign instruc[100] = 11;
+assign instruc[101] = 12;
+
+always@(posedge clock)
+begin
+   //read instructions[i] into output ins
+   ins = instruc[adr8];
+
+end
+
+endmodule
+
+--------------------------------------------------
+
+module regis(clock, write,sixa,sixb,sixc,writein,sout,tout);
+//init IO
+input clock;
+input write;
+
+input [5:0] sixa;
+input [5:0] sixb;
+input [5:0] sixc;
+input [31:0] writein;
+//init static memory
+reg [31:0] regis [63:0];
+
+output reg [31:0] sout;
+output reg [31:0] tout;
+
+always@(posedge clock)
+begin
+    //writein at address sixc in regis
+    if (write == 1)
+        
+        regis[sixc] = writein;
+    
+    else if (write == 0)
+    begin
+    
+    //get data at 6a and 6b inside regis into sout and tout respectively
+    sout = regis[sixa];
+    tout = regis[sixb];
+   
+    
+    end
+
+
+end
+endmodule
+
+
+--------------------------------------
+module testbed;
+//initialize clock
+reg clock;
+
+//module instruct(clock,adr8,ins);
+//initialize instruction memory variables and test_
+
+reg [7:0] adr8;
+
+wire [31:0] ins;
+
+instruct testi(clock,adr8,ins);
+
+//module regis(clock,write,sixa,sixb,sixc,writein,sout,tout);
+//initialize register variables and test_
+
+reg write;
+reg [5:0] sixa;
+reg [5:0] sixb;
+reg [5:0] sixc;
+reg  [31:0] writein;
+
+wire [31:0] sout;
+wire [31:0] tout;
+
+regis testr(clock,write,sixa,sixb,sixc,writein,sout,tout);
+//module data(clock,write,read,addin,writein,dataout);
+//initialize data variables and test_
+
+reg dwrite;
+reg read;
+reg [31:0] addin;
+reg [31:0] dwritein;
+
+wire [31:0] dataout;
+
+data testd(clock,dwrite,read,addin,dwritein,dataout);
+
+
+//initialize clock thread
+initial
+begin
+    clock = 0;
+    forever #50 clock = ~clock;
+end
+
+
+//initialize test cases
+initial 
+begin
+    //module data(clock,dwrite,read,addin,dwritein,dataout);
+        //write 7 into blocks[2]
+        dwrite = 1;
+        read = 0;
+        addin = 2;
+        dwritein = 7;
+        
+        #100
+        //read 7 from blocks[2] into dataout
+        dwrite = 0;
+        read = 1;
+        
+        
+        #100
+    //module instruct(clock,adr8,ins);
+        //read inst mem
+        //hardcode instruction
+        //assign instruc[100] = 11;
+        
+        adr8 = 100;
+        
+        #100
+    
+        //read inst mem
+        //hardcode instruction
+        //assign instruc[101] = 12;
+        
+        adr8 = 101;
+        
+        #100
+        
+    
+    //module regis(clock,write,sixa,sixb,sixc,writein,sout,tout);
+        //write registers
+        //regis[10] = 10
+        
+        write = 1;
+        writein = 10;
+        sixc = 10;
+        
+        #100
+        //regis[11] = 11;
+        
+        writein = 11;
+        sixc = 11;
+        
+        #100
+        
+        //read registers
+        //read regis[10,11]
+        
+        write = 0;
+        
+        sixa = 10;
+        sixb = 11;
+        
+        //sout == 10
+        //tout == 11
+    
+
+
+end
+
+
+
+endmodule
