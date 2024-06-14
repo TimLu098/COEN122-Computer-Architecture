@@ -1,4 +1,4 @@
-###Computer Architecture
+#Computer Architecture
 - Overview of computer systems.
 - Instruction set architecture.
 - Quantitative analysis.
