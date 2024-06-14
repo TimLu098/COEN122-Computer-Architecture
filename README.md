@@ -1,8 +1,4 @@
-# The largest heading
-## The second largest heading
-###### The smallest heading
-
-###Computer Architecture
+## Computer Architecture
 - Overview of computer systems.
 - Instruction set architecture.
 - Quantitative analysis.
